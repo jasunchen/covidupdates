@@ -22,7 +22,7 @@ public class MapFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         mapViewModel =
                 ViewModelProviders.of(this).get(MapViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_maps, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
         mapViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
