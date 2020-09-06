@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_DENIED) {
                 // Request location permission
-                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                requestPermissions(new String[] {Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1);
             } else {
                 // Request location
                 startService();

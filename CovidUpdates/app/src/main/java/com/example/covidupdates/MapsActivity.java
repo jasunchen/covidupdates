@@ -11,8 +11,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.GoogleMap.OnPolygonClickListener;
 
-
+import android.os.Parcelable;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -43,19 +44,22 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity
+        implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private CameraPosition cameraPosition;
     private FusedLocationProviderClient fusedLocationClient;
     private final LatLng defaultLocation = new LatLng(-60, 100);
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 12;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted = true;
     private Location lastKnownLocation;
@@ -66,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String[] likelyPlaceAddresses;
     private List[] likelyPlaceAttributions;
     private LatLng[] likelyPlaceLatLngs;
+    private Double[][][] areas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +112,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng losang = new LatLng(34, 118);
         this.mMap.addMarker(new MarkerOptions().position(losang).title("Los Angeles"));
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(losang));
+
+            Polygon polygon1 = googleMap.addPolygon(new PolygonOptions()
+                    .clickable(true)
+                    .add(
+                            new LatLng(33.8,-118.48),
+                            new LatLng( 33.81,-118.49),
+                            new LatLng( 33.83,-118.47),
+                            new LatLng (33.83,-118.38),
+                            new LatLng( 33.86,-118.39),
+                            new LatLng(33.87,-118.36),
+                            new LatLng( 33.89,-118.35),
+                            new LatLng( 33.89,-118.3),
+                            new LatLng( 33.79,-118.3),
+                            new LatLng( 33.79,-118.32),
+                            new LatLng( 33.77,-118.32),
+                            new LatLng(  33.79,-118.36),
+                            new LatLng(  33.8,-118.48)));
+            polygon1.setTag("alpha");
+            stylePolygon(polygon1);
+
 
 
         // Prompt the user for permission.
@@ -183,6 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
+
                 }
             }
         }
@@ -215,6 +241,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private static final int COLOR_WHITE_ARGB = 0xffffffff;
+    private static final int COLOR_GREEN_ARGB = 0xff388E3C;
+    private static final int COLOR_PURPLE_ARGB = 0xff81C784;
+    private static final int COLOR_ORANGE_ARGB = 0xffF57F17;
+    private static final int COLOR_BLUE_ARGB = 0xffF9A825;
+
+
+
+    private void stylePolygon(Polygon polygon) {
+        String type = "";
+        // Get the data object stored with the polygon.
+        if (polygon.getTag() != null) {
+            type = polygon.getTag().toString();
+        }
+
+        int fillColor = COLOR_WHITE_ARGB;
+
+        switch (type) {
+            // If no type is given, allow the API to use the default.
+            case "alpha":
+                // Apply a stroke pattern to render a dashed line, and define colors.
+                fillColor = COLOR_PURPLE_ARGB;
+                break;
+            case "beta":
+                // Apply a stroke pattern to render a line of dots and dashes, and define colors.
+                fillColor = COLOR_BLUE_ARGB;
+                break;
+        }
+
+        polygon.setFillColor(fillColor);
+    }
 
 
 
