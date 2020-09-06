@@ -65,4 +65,13 @@ public class LocationService extends Service {
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
+
+    public boolean needsNotification(Location location, float radius, long timeFrame) {
+        for (long time : timesOfPastTwoWeeks.keySet()) {
+            if (time <= location.getTime() + timeFrame && time >= location.getTime() - timeFrame && timesOfPastTwoWeeks.get(time).distanceTo(location) <= radius) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
