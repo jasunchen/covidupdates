@@ -1,9 +1,13 @@
 package com.example.covidupdates;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -13,6 +17,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +35,18 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+                // Request location permission
+                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                // Request location
+                startService();
+            }
+        } else {
+            // Start the location service
+            startService();
+        }
     }
 
     public void goToMaps(View view) {
@@ -37,4 +54,22 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    void startService() {
+        Intent intent = new Intent(MainActivity.this, LocationService.class);
+        startService(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startService();
+                } else {
+                    Toast.makeText(this, "Please grant location permission", Toast.LENGTH_LONG).show();
+                }
+        }
+    }
 }
