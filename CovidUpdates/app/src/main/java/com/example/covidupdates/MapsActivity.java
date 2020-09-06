@@ -1,6 +1,5 @@
 package com.example.covidupdates;
 
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -12,20 +11,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnPolygonClickListener;
-
 import android.os.Parcelable;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.Location;
-import android.os.Bundle;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -36,10 +31,8 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -66,12 +59,16 @@ public class MapsActivity extends AppCompatActivity
     private Location lastKnownLocation;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    private static final int M_MAX_ENTRIES = 5;
-    private String[] likelyPlaceNames;
-    private String[] likelyPlaceAddresses;
-    private List[] likelyPlaceAttributions;
-    private LatLng[] likelyPlaceLatLngs;
-    private Double[][][] areas;
+
+    private String torranceTag = new String("Torrance -- Cases: 1329");
+    private String carsonTag = new String("Carson -- Cases: 1726");
+    private String inglewoodTag = new String("Inglewood -- Cases: 2696");
+
+    /*
+    private String[] torranceTag = new String [] {"Torrance","Cases: 1329", "Cases Per 100,000: 890", "Deaths: 68"};
+    private String[] carsonTag = new String [] {"Carson","Cases: 1329", "Cases Per 100,000: 890", "Deaths: 68"};
+    private String[] inglewoodTag = new String [] {"Inglewood","Cases: 1329", "Cases Per 100,000: 890", "Deaths: 68"};
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +123,7 @@ public class MapsActivity extends AppCompatActivity
                             new LatLng( 33.79,-118.32),
                             new LatLng( 33.77,-118.32),
                             new LatLng(  33.79,-118.36)));
-            torrance.setTag("Torrance");
+            torrance.setTag(torranceTag);
             stylePolygon(torrance);
 
         Polygon carson = googleMap.addPolygon(new PolygonOptions()
@@ -140,7 +137,7 @@ public class MapsActivity extends AppCompatActivity
                         new LatLng(33.78,-118.22),
                         new LatLng(33.79,-118.3),
                         new LatLng(33.86,-118.29)));
-            carson.setTag("Carson");
+            carson.setTag(carsonTag);
             stylePolygon(carson);
 
 
@@ -173,7 +170,7 @@ public class MapsActivity extends AppCompatActivity
                         new LatLng( 33.92  ,  -118.35  ),
                         new LatLng( 33.93  ,  -118.38  ),
                         new LatLng(33.96   ,   -118.39 )));
-        inglewood.setTag("Inglewood");
+        inglewood.setTag(inglewoodTag);
         stylePolygon(inglewood);
 
 
@@ -305,24 +302,23 @@ public class MapsActivity extends AppCompatActivity
 
         int fillColor = COLOR_WHITE_ARGB;
 
-        switch (type) {
-            // If no type is given, allow the API to use the default.
-            case "Torrance":
-                // Apply a stroke pattern to render a dashed line, and define colors.
+        if (polygon.getTag() == torranceTag)
                 fillColor = COLOR_LIGHTESTBLUE_ARGB;
-                break;
-            case "Carson":
-                // Apply a stroke pattern to render a line of dots and dashes, and define colors.
+
+        else if (polygon.getTag() == carsonTag)
                 fillColor = COLOR_MEDIUMBLUE_ARGB;
-                break;
-            case "Inglewood":
-                fillColor = COLOR__DARKBLUE_ARGB;
-        }
+        else if (polygon.getTag() == inglewoodTag)
+            fillColor = COLOR__DARKBLUE_ARGB;
+
+
         polygon.setFillColor(fillColor);
         polygon.setClickable(true);
     }
 
     public void onPolygonClick(Polygon polygon) {
+        Toast.makeText(getApplicationContext(), polygon.getTag().toString(),
+                Toast.LENGTH_LONG).show();
+
     }
 
 
