@@ -52,9 +52,10 @@ import com.google.android.gms.tasks.Task;
 import java.util.List;
 
 
-public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback {
-
+public class MapsActivity extends AppCompatActivity
+        implements
+            OnMapReadyCallback,
+            GoogleMap.OnPolygonClickListener {
     private GoogleMap mMap;
     private CameraPosition cameraPosition;
     private FusedLocationProviderClient fusedLocationClient;
@@ -113,12 +114,9 @@ public class MapsActivity extends FragmentActivity
         this.mMap.addMarker(new MarkerOptions().position(losang).title("Los Angeles"));
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(losang));
 
-            Polygon polygon1 = googleMap.addPolygon(new PolygonOptions()
+            Polygon torrance = googleMap.addPolygon(new PolygonOptions()
                     .clickable(true)
                     .add(
-                            new LatLng(33.8,-118.48),
-                            new LatLng( 33.81,-118.49),
-                            new LatLng( 33.83,-118.47),
                             new LatLng (33.83,-118.38),
                             new LatLng( 33.86,-118.39),
                             new LatLng(33.87,-118.36),
@@ -127,22 +125,72 @@ public class MapsActivity extends FragmentActivity
                             new LatLng( 33.79,-118.3),
                             new LatLng( 33.79,-118.32),
                             new LatLng( 33.77,-118.32),
-                            new LatLng(  33.79,-118.36),
-                            new LatLng(  33.8,-118.48)));
-            polygon1.setTag("alpha");
-            stylePolygon(polygon1);
+                            new LatLng(  33.79,-118.36)));
+            torrance.setTag("Torrance");
+            stylePolygon(torrance);
+
+        Polygon carson = googleMap.addPolygon(new PolygonOptions()
+                .clickable(true)
+                .add(
+                        new LatLng(33.86,-118.29),
+                        new LatLng(33.9,-118.28),
+                        new LatLng(33.9,-118.25),
+                        new LatLng(33.86,-118.23),
+                        new LatLng(33.86,-118.2),
+                        new LatLng(33.78,-118.22),
+                        new LatLng(33.79,-118.3),
+                        new LatLng(33.86,-118.29)));
+            carson.setTag("Carson");
+            stylePolygon(carson);
+
+
+
+        /*Polygon compton = googleMap.addPolygon(new PolygonOptions()
+                .clickable(true)
+                .add(
+                        new LatLng(  33.88   ,  118.27  ),
+                        new LatLng(  33.93   , 118.26   ),
+                        new LatLng(  33.92   ,  118.18  ),
+                        new LatLng(  33.9   ,   118.17 ),
+                        new LatLng(  33.88  ,  118.17  ),
+                        new LatLng(  33.85   ,  118.22  ),
+                        new LatLng(  33.86   ,  118.26  ),
+                        new LatLng(  33.88  ,  118.27  )));
+        compton.setTag("Compton");
+        stylePolygon(compton);
+        */
+
+
+        Polygon inglewood = googleMap.addPolygon(new PolygonOptions()
+                .clickable(true)
+                .add(
+                        new LatLng( 33.96  , -118.39   ),
+                        new LatLng(  33.97 , -118.38   ),
+                        new LatLng(33.99   ,  -118.39  ),
+                        new LatLng( 33.99  ,  -118.33  ),
+                        new LatLng( 33.98 ,   -118.31 ),
+                        new LatLng( 33.93  ,   -118.3 ),
+                        new LatLng( 33.92  ,  -118.35  ),
+                        new LatLng( 33.93  ,  -118.38  ),
+                        new LatLng(33.96   ,   -118.39 )));
+        inglewood.setTag("Inglewood");
+        stylePolygon(inglewood);
 
 
 
         // Prompt the user for permission.
         getLocationPermission();
-        // [END_EXCLUDE]
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+
+        //Set polygon clicker
+        googleMap.setOnPolygonClickListener(this);
+
     }
 
     private void getLocationPermission() {
@@ -242,11 +290,10 @@ public class MapsActivity extends FragmentActivity
     }
 
     private static final int COLOR_WHITE_ARGB = 0xffffffff;
-    private static final int COLOR_GREEN_ARGB = 0xff388E3C;
-    private static final int COLOR_PURPLE_ARGB = 0xff81C784;
-    private static final int COLOR_ORANGE_ARGB = 0xffF57F17;
-    private static final int COLOR_BLUE_ARGB = 0xffF9A825;
-
+    private static final int COLOR_LIGHTESTBLUE_ARGB = 0x4087CEFA;
+    private static final int COLOR_MEDIUMBLUE_ARGB = 0x404169E1;
+    private static final int COLOR__DARKBLUE_ARGB = 0x4000008B;
+    private static final int COLOR_DARKESTBLUE_ARGB = 0x40F9A825;
 
 
     private void stylePolygon(Polygon polygon) {
@@ -260,19 +307,23 @@ public class MapsActivity extends FragmentActivity
 
         switch (type) {
             // If no type is given, allow the API to use the default.
-            case "alpha":
+            case "Torrance":
                 // Apply a stroke pattern to render a dashed line, and define colors.
-                fillColor = COLOR_PURPLE_ARGB;
+                fillColor = COLOR_LIGHTESTBLUE_ARGB;
                 break;
-            case "beta":
+            case "Carson":
                 // Apply a stroke pattern to render a line of dots and dashes, and define colors.
-                fillColor = COLOR_BLUE_ARGB;
+                fillColor = COLOR_MEDIUMBLUE_ARGB;
                 break;
+            case "Inglewood":
+                fillColor = COLOR__DARKBLUE_ARGB;
         }
-
         polygon.setFillColor(fillColor);
+        polygon.setClickable(true);
     }
 
+    public void onPolygonClick(Polygon polygon) {
+    }
 
 
 
